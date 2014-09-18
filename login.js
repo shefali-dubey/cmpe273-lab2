@@ -55,13 +55,9 @@ Login.prototype.refresh = function(sessionId) {
 	console.log("name:" +name);
 	console.log("email: " +email);
 
-	//this.sessionMap.delete(sessionId);
 	delete this.sessionMap[sessionId];
 
-	var newSessionId = new Date().getTime();
-	this.sessionMap[newSessionId] = { name: name, email: email };
-
-	console.log('new session id ' + newSessionId + ' for login::' + email);
+	var newSessionId = this.login(name, email);
 
 	return newSessionId;
 };
