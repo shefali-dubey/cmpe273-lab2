@@ -3,8 +3,6 @@ var login = require('./login');
 
 var app = connect();
 
-var qs = require('querystring');
-
 app.use(connect.json()); // Parse JSON request body into `request.body`
 app.use(connect.urlencoded()); // Parse form in request body into `request.body`
 app.use(connect.cookieParser()); // Parse cookies in the request headers into `request.cookies`
@@ -75,6 +73,8 @@ function put(request, response) {
 	
 	console.log("PUT:: Re-generate new seesion_id for the same user");
 
+	var newSessionId = '';
+
 	// TODO: refresh session id; similar to the post() function
 	var cookies = request.cookies;
 	console.log(cookies);
@@ -83,9 +83,13 @@ function put(request, response) {
 		console.log("Session ID: " +sid);
 		if ( login.isLoggedIn(sid) ) {
 			console.log("Logged in with session ID: " +sid);
-			login.refresh(sid);
+			newSessionId = login.refresh(sid);
+		}else {
+			response.end("Invalid session_id! Please login again\n");
 		}
 	}
+
+	response.setHeader('Set-Cookie', 'session_id=' + newSessionId);
 
 	response.end("Re-freshed session id\n");
 };
